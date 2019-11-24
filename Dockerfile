@@ -17,7 +17,8 @@ ENTRYPOINT ["dumb-init", "-r", "15:2", "python", "./runserver.py", "--host", "0.
 
 COPY requirements.txt /usr/src/app/
 
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends build-essential \
  && pip install --no-cache-dir dumb-init \
  && pip install --no-cache-dir -r requirements.txt \
  && apt-get purge -y --auto-remove build-essential \
@@ -26,18 +27,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 COPY package.json Gruntfile.js static01.zip /usr/src/app/
 COPY static /usr/src/app/static
 
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential curl unzip \
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends build-essential curl unzip \
  && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
- && apt-get install -y --no-install-recommends nodejs npm 
-
-RUN npm install
-RUN npm install -g grunt-cli
-RUN npm rebuild node-sass
-RUN grunt build --force
-RUN npm run build
-
-RUN rm -rf node_modules \
- && apt-get purge -y --auto-remove build-essential nodejs \
+ && apt-get install -y --no-install-recommends nodejs npm \
+ && npm install \
+ && npm install -g grunt-cli \
+ && npm rebuild node-sass \
+ && grunt build --force \
+ && npm run build \
+ && rm -rf node_modules \
+ && apt-get purge -y --auto-remove build-essential nodejs npm \
  && rm -rf /var/lib/apt/lists/*
 
 # Copy everything to the working directory (Python files, templates, config) in one go.
