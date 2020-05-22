@@ -36,6 +36,7 @@ RUN apt-get update \
         build-essential curl imagemagick \
  && pip install --no-cache-dir dumb-init \
  && pip install --no-cache-dir -r requirements.txt \
+ && pip install newrelic \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get purge -y --auto-remove build-essential
 
@@ -52,4 +53,4 @@ RUN rm -rf /usr/src/app/config
 COPY --from=0 /usr/src/app/static /usr/src/app/static
 
 # Set Entrypoint with hard-coded options
-ENTRYPOINT ["dumb-init", "-r", "15:2", "python", "./runserver.py", "--host", "0.0.0.0"]
+ENTRYPOINT ["dumb-init", "-r", "15:2", "newrelic-admin", "run-python", "./runserver.py", "--host", "0.0.0.0"]
